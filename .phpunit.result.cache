@@ -1,1 +1,0 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":260:{a:2:{s:7:"defects";a:2:{s:33:"ExpandCollectionTest::testSuccess";i:3;s:49:"ExpandCollectionTest::testCreateCollectionSuccess";i:3;}s:5:"times";a:2:{s:33:"ExpandCollectionTest::testSuccess";d:0.002;s:49:"ExpandCollectionTest::testCreateCollectionSuccess";d:0;}}}
