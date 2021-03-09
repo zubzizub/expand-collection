@@ -1,10 +1,29 @@
 <?php
 
+use App\CollectionCreator;
 use App\CollectionExpand;
 use PHPUnit\Framework\TestCase;
 
 class ExpandCollectionTest extends TestCase
 {
+    public function testCreateCollection()
+    {
+        $expand = 'bonus.budget.currency,bonus.accrual_rules,bonus.budget,player.account,player.currency';
+        $collectionExpand = (new CollectionCreator($expand))->create();
+
+        self::assertEquals($expand, $collectionExpand->getName());
+        self::assertTrue($collectionExpand->has('bonus'));
+        self::assertCount(2, $collectionExpand);
+
+        $bonusCollection = $collectionExpand->getByName('bonus');
+        self::assertInstanceOf(CollectionExpand::class, $bonusCollection);
+        self::assertCount(2, $collectionExpand);
+
+        $budgetCollection = $bonusCollection->getByName('budget');
+        self::assertEquals('budget', $budgetCollection->getName());
+        self::assertCount(1, $budgetCollection);
+    }
+
     public function testSuccess()
     {
         $collectionExpand = $this->createCollectionExpand();
@@ -24,11 +43,6 @@ class ExpandCollectionTest extends TestCase
         $currencyExpand = $budgetExpand->getByName('currency');
         self::assertInstanceOf(CollectionExpand::class, $currencyExpand);
         self::assertTrue($budgetExpand->has('currency'));
-    }
-
-    public function testCreateCollectionSuccess()
-    {
-        self::assertTrue(true);
     }
 
     private function createCollectionExpand(): CollectionExpand
