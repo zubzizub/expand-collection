@@ -4,20 +4,18 @@ namespace App;
 
 class CollectionCreator
 {
-    public function create(string $expand): CollectionExpand
+    private string $expand;
+
+    public function __construct(string $expand)
     {
-        $expands = explode(',', $expand);
+        $this->expand = $expand;
+    }
 
-        foreach ($expands as $expand) {
+    public function create(): CollectionExpand
+    {
+        $expands = explode(',', $this->expand);
 
-            $arr = [];
-            foreach (explode('.', $expand) as $key => $item) {
-
-                $arr[] = $item;
-            }
-        }
-
-        $arr = [];
+        $mergedExpand = [];
         foreach ($expands as $item) {
             $nested_array = [];
             $temp = &$nested_array;
@@ -25,13 +23,14 @@ class CollectionCreator
             foreach (explode('.', $item) as $key => $value) {
                 $temp = &$temp[$value];
             }
-            $arr = array_merge_recursive($arr, $nested_array);
+            $mergedExpand = array_replace_recursive($nested_array, $mergedExpand);
         }
 
-        return $this->buildRecursiveCollection($arr, new CollectionExpand('transaction'));
+        $collectionExpand = new CollectionExpand($this->expand);
+        return $this->buildRecursiveCollection($mergedExpand, $collectionExpand);
     }
 
-    protected function buildRecursiveCollection(array $expandNames, CollectionExpand &$collectionExpand): CollectionExpand
+    protected function buildRecursiveCollection(array $expandNames, CollectionExpand $collectionExpand): CollectionExpand
     {
         if (empty($expandNames)) {
             return $collectionExpand;
@@ -45,8 +44,6 @@ class CollectionCreator
                 $expandChild = $collectionExpand->getByName($key);
                 $collectionExpand->expands[$key] = $this->buildRecursiveCollection($item, $expandChild);
             }
-
-//        $expandChild->add(new CollectionExpand($key));
         }
         return $collectionExpand;
     }

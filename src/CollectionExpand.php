@@ -9,7 +9,7 @@ class CollectionExpand extends SplObjectStorage
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var CollectionExpand[]
@@ -29,11 +29,6 @@ class CollectionExpand extends SplObjectStorage
     public function getByName(string $expand): ?self
     {
         return !empty($this->expands[$expand]) ? $this->expands[$expand] : null;
-    }
-
-    public function getChildrens()
-    {
-        return $this->expands;
     }
 
     public function add(CollectionExpand $children): void
